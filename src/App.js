@@ -1,21 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './App.css'
+import { ThemeContext, themes } from './context/theme'
+
+const Button = ({children, ...rest}) => {
+
+  const contextType = useContext(ThemeContext);
+  return (
+    <button 
+      {...rest}
+      onClick={contextType.toggleTheme} 
+      style={{ backgroundColor: contextType.theme.background, color: contextType.theme.forground }}>
+      {children}
+    </button>
+  )
+
+}
+const Block = props => <Button>theme name</Button>
 
 const App = props => {
   
-  const [ count, setCount] = useState(0);
-  const [ name, setName ] = useState('guest');
-  const updateTitle = () => {
-    console.log("effect of updating a title", count);
-    document.title = `You clicked ${count} time :)`;
-  };
-  useEffect(updateTitle);
+  
+  const [ theme, setTheme ] = useState({
+    theme: themes.light,
+  });
+  
+  const toggleTheme = () => {
+    setTheme({
+      theme: 
+        theme.theme === themes.light
+          ? themes.dark
+          : themes.light
+    })
+  }
 
+  useEffect(() => {}, []);
+  
   return (
-    <div className="App" style={{height: '200vh'}}>
-      <p>{name} clicked {count} time :)</p>
-      <button onClick={() => setCount(count+1)}>click me</button>
-      <input onChange={({target}) => setName(target.value)} />
+    <div className="App">
+      <ThemeContext.Provider value={{ ...theme, toggleTheme }}>
+        <Block />
+      </ThemeContext.Provider>
     </div>
   )
 }
