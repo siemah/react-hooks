@@ -1,47 +1,42 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useReducer } from 'react';
 import './App.css'
-import { ThemeContext, themes } from './context/theme'
 
-const Button = ({children, ...rest}) => {
+const init = (state) => state;
 
-  const contextType = useContext(ThemeContext);
-  return (
-    <button 
-      {...rest}
-      onClick={contextType.toggleTheme} 
-      style={{ backgroundColor: contextType.theme.background, color: contextType.theme.forground }}>
-      {children}
-    </button>
-  )
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'inc':
+      return {...state, count: state.count+1}
+  
+    case 'dec':
+      return {...state, count: state.count-1}
 
+    case 'reset':
+      return init(action.payload)
+
+    default:
+      throw new Error('nothing to do')
+      break;
+  }
 }
-const Block = props => <Button>theme name</Button>
+const initState = {count: 0};
+const App = (props) => {
+  
+  const [ state, dispatch ] = useReducer(reducer, initState, init);
 
-const App = props => {
-  
-  
-  const [ theme, setTheme ] = useState({
-    theme: themes.light,
-  });
-  
-  const toggleTheme = () => {
-    setTheme({
-      theme: 
-        theme.theme === themes.light
-          ? themes.dark
-          : themes.light
-    })
+  const onClick = ({ target }) => {
+    dispatch({ type: target.getAttribute('data-type') })
   }
 
-  useEffect(() => {}, []);
-  
   return (
-    <div className="App">
-      <ThemeContext.Provider value={{ ...theme, toggleTheme }}>
-        <Block />
-      </ThemeContext.Provider>
-    </div>
+    <div>
+      count: {state.count}
+      <button onClick={onClick} data-type="inc">+</button>
+      <button onClick={onClick} data-type="dec">-</button>
+      <button onClick={() => dispatch({ type: "reset", payload: initState })}>reset</button>
+    </div>    
   )
+
 }
 
 export default App;
