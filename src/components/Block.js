@@ -1,11 +1,11 @@
 import React from 'react'
-import Button from './Button'
 
- const Block = (props) => {
+const Block = (props) => {
   return (
     <div className='block'>
-      <Button />
+      <button>this is a button</button>
     </div>
   )
 }
+
 export default Block;
