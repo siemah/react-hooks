@@ -1,9 +1,10 @@
 import React from 'react'
+import {Link } from 'react-router-dom'
 
 const Block = (props) => {
   return (
     <div className='block'>
-      <button>this is a button</button>
+      <Link to='/contact'>got to contact</Link>
     </div>
   )
 }
